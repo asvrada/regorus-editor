@@ -124,87 +124,91 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  function onClickEvaluate() {
+    let policy = editorPolicyRef.current.getValue();
+    let files = policy.split(SEPARATOR);
+
+    try {
+      var startTime = new Date();
+      var engine = new Engine();
+      for (var i = 0; i < files.length; ++i) {
+        engine.add_policy("policy.rego", files[i]);
+      }
+
+      engine.set_input(editorInputRef.current.getValue());
+      engine.add_data(editorDataRef.current.getValue());
+      let parse_time = new Date() - startTime;
+
+      let results = engine.eval_query("data");
+      var elapsed = new Date() - startTime;
+      let output = `// Evaluation took ${elapsed} milliseconds. parse = ${parse_time}, eval = ${elapsed - parse_time}\n${results}`;
+      editorOutputRef.current.setValue(output);
+    } catch (error) {
+      editorOutputRef.current.setValue(error);
+    }
+  }
+
   return (
     <>
-      {/* Header for things like Evaluate/Format/Publish buttons */}
-      <div>
-        <button
-          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          onClick={() => {
-            let policy = editorPolicyRef.current.getValue();
-            let files = policy.split(SEPARATOR);
+      <div className="flex h-screen flex-col bg-slate-300">
+        {/* Header for things like Evaluate/Format/Publish buttons */}
+        <header className="my-2 flex-none flex flex-row-reverse">
+          <button 
+            className="mr-8 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+            onClick={onClickEvaluate}
+          >
+            Evaluate
+          </button>
+        </header>
 
-            try {
-              var startTime = new Date();
-              var engine = new Engine();
-              for (var i = 0; i < files.length; ++i) {
-                engine.add_policy("policy.rego", files[i]);
-              }
-
-              engine.set_input(editorInputRef.current.getValue());
-              engine.add_data(editorDataRef.current.getValue());
-              let parse_time = new Date() - startTime;
-
-              let results = engine.eval_query("data");
-              var elapsed = new Date() - startTime;
-              let output = `// Evaluation took ${elapsed} milliseconds. parse = ${parse_time}, eval = ${elapsed - parse_time}\n${results}`;
-              editorOutputRef.current.setValue(output);
-            } catch (error) {
-              editorOutputRef.current.setValue(error);
-            }
-          }}
-        >
-          Evaluate
-        </button>
-      </div>
-
-      {/* Main Editor body */}
-      <div className="container mx-auto">
-        <div className="flex flex-row">
-          {/* Left window - Rego policy data */}
-          <div className="h-screen flex-auto">
-            <Editor
-              defaultLanguage="javascript"
-              defaultValue="Rego policy goes here"
-              onMount={(editor, monaco) => {
-                editorPolicyRef.current = editor;
-              }}
-            />
-          </div>
-
-          {/* Right Column for a list of windows */}
-          <div className="flex-auto">
-            {/* First window - Input */}
-            <div className="h-1/3">
+        {/* Main Editor body */}
+        <div className="flex-auto grow">
+          <div className="flex h-full flex-row space-x-4">
+            {/* Left window - Rego policy data */}
+            <div className="flex-auto">
               <Editor
                 defaultLanguage="javascript"
-                defaultValue="Input goes here"
+                defaultValue="Rego policy goes here"
                 onMount={(editor, monaco) => {
-                  editorInputRef.current = editor;
+                  editorPolicyRef.current = editor;
                 }}
               />
             </div>
 
-            {/* Second window - Data */}
-            <div className="h-1/3">
-              <Editor
-                defaultLanguage="javascript"
-                defaultValue="Data goes here"
-                onMount={(editor, monaco) => {
-                  editorDataRef.current = editor;
-                }}
-              />
-            </div>
+            {/* Right Column for a list of windows */}
+            <div className="flex flex-auto flex-col space-y-4">
+              {/* First window - Input */}
+              <div className="flex-auto">
+                <Editor
+                  defaultLanguage="javascript"
+                  defaultValue="Input goes here"
+                  onMount={(editor, monaco) => {
+                    editorInputRef.current = editor;
+                  }}
+                />
+              </div>
 
-            {/* Third window - Output */}
-            <div className="h-1/3">
-              <Editor
-                defaultLanguage="javascript"
-                defaultValue="Output goes here"
-                onMount={(editor, monaco) => {
-                  editorOutputRef.current = editor;
-                }}
-              />
+              {/* Second window - Data */}
+              <div className="flex-auto">
+                <Editor
+                  defaultLanguage="javascript"
+                  defaultValue="Data goes here"
+                  onMount={(editor, monaco) => {
+                    editorDataRef.current = editor;
+                  }}
+                />
+              </div>
+
+              {/* Third window - Output */}
+              <div className="flex-auto">
+                <Editor
+                  defaultLanguage="javascript"
+                  defaultValue="Output goes here"
+                  onMount={(editor, monaco) => {
+                    editorOutputRef.current = editor;
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
