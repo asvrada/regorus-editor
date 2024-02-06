@@ -186,7 +186,7 @@ function App() {
             <div className="flex flex-auto flex-col space-y-4">
               {/* First window - Input */}
               <div className="flex flex-1 flex-col">
-                <div className="h-8 flex-1">Input</div>
+                <div className="h-8 flex-1">Input Editor</div>
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
@@ -199,7 +199,7 @@ function App() {
 
               {/* Second window - Data */}
               <div className="flex flex-1 flex-col">
-              <div className="h-8 flex-1">Data</div>
+              <div className="h-8 flex-1">Data Editor</div>
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
