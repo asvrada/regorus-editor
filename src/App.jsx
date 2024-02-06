@@ -107,24 +107,36 @@ const REGO_LANGUAGE = {
   },
 };
 
-const examples = {
+const EXAMPLES = {
   example1: {
     policy: "/examples/example1/example.rego",
     input: "/examples/example1/input.json",
   },
 };
 
-async function loadExample({ policy, input }) {
+/**
+ * Load examples from internet
+ * @param {{policy: string, input: string, data: string}}  
+ * @returns {{policy: string, input: string, data: string}} Content of given 3 files
+ */
+async function loadExample({ policy, input, data }) {
   const res1 = await fetch(policy);
   const text1 = await res1.text();
 
   const res2 = await fetch(input);
   const text2 = await res2.text();
 
+  // Data file is optional, if file missing, default to {}
+  let text3 = "{}";
+  if (data) {
+    const res3 = await fetch(input);
+    text3 = await res3.text();
+  }
+
   return {
     policy: text1,
     input: text2,
-    data: "{}",
+    data: text3,
   };
 }
 
@@ -184,7 +196,7 @@ function App() {
             <button
               className="mx-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
               onClick={async () => {
-                const { policy, input, data } = await loadExample(examples.example1);
+                const { policy, input, data } = await loadExample(EXAMPLES.example1);
 
                 editorPolicyRef.current.setValue(policy);
                 editorInputRef.current.setValue(input);
