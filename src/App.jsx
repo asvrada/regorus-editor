@@ -152,19 +152,24 @@ function App() {
     <>
       <div className="flex h-screen flex-col bg-slate-300">
         {/* Header for things like Evaluate/Format/Publish buttons */}
-        <header className="my-2 flex flex-none flex-row-reverse">
-          <button
-            className="mr-8 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-            onClick={onClickEvaluate}
-          >
-            Evaluate
-          </button>
+        <header className="my-2 flex flex-none justify-between">
+          <h2 className="ml-6 text-2xl font-bold">Regorus Playground</h2>
+          <div className="mr-6">
+            <button
+              className="mr-8 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              onClick={onClickEvaluate}
+            >
+              Evaluate
+            </button>
+
+            <a href="https://github.com/microsoft/regorus">GitHub Icon</a>
+          </div>
         </header>
 
         {/* Main Editor body */}
         <div className="flex-auto grow">
           <div className="flex h-full flex-row space-x-4">
-            {/* Left window - Rego policy data */}
+            {/* Left window - Rego policy */}
             <div className="flex-auto">
               <Editor
                 defaultLanguage="Rego"
@@ -183,10 +188,10 @@ function App() {
             </div>
 
             {/* Right Column for a list of windows */}
-            <div className="flex flex-auto flex-col space-y-4">
+            <div className="flex flex-auto flex-col space-y-1">
               {/* First window - Input */}
               <div className="flex flex-1 flex-col">
-                <div className="h-8 flex-1">Input Editor</div>
+                <div className="flex-1 text-sm font-bold">Input Editor</div>
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
@@ -199,7 +204,7 @@ function App() {
 
               {/* Second window - Data */}
               <div className="flex flex-1 flex-col">
-              <div className="h-8 flex-1">Data Editor</div>
+                <div className="flex-1 text-sm font-bold">Data Editor</div>
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
@@ -212,11 +217,17 @@ function App() {
 
               {/* Third window - Output */}
               <div className="flex flex-1 flex-col">
-              <div className="h-8 flex-1">Output</div>
+                <div className="flex-1 text-sm font-bold">Output</div>
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
                   defaultValue="// Output goes here"
+                  options={{
+                    readOnly: true,
+                    minimap: {
+                      enabled: false,
+                    },
+                  }}
                   onMount={(editor, monaco) => {
                     editorOutputRef.current = editor;
                   }}
