@@ -117,7 +117,7 @@ const EXAMPLES = {
 /**
  * Load examples from internet
  * @param {{policy: string, input: string, data: string}}  
- * @returns {{policy: string, input: string, data: string}} Content of given 3 files
+ * @returns {Promise<{policy: string, input: string, data: string}>} Content of given 3 files
  */
 async function loadExample({ policy, input, data }) {
   const res1 = await fetch(policy);
