@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import Editor from "@monaco-editor/react";
 
 import init, { Engine } from "regorus";
 
@@ -40,7 +41,13 @@ function App() {
       {/* Main Editor body */}
       <div>
         {/* Left window - Rego policy data */}
-        <div></div>
+        <div>
+          <Editor
+            height="90vh"
+            defaultLanguage="javascript"
+            defaultValue="// some comment"
+          />
+        </div>
 
         {/* Right Column for a list of windows */}
         <div>
