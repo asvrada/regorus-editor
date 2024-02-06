@@ -1,6 +1,6 @@
 # Regorus Playground
 
-This online interactive playground showcases Regorus - Rego interpreter, analyzer and validator written in Rust https://github.com/anakrish/regorus
+This online interactive playground showcases Regorus - Rego interpreter, analyzer and validator written in Rust https://github.com/microsoft/regorus
 
 ## Pre-requisites
 
