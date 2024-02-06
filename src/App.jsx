@@ -107,8 +107,43 @@ const REGO_LANGUAGE = {
   },
 };
 
+const EXAMPLES = {
+  example1: {
+    policy: "/examples/example1/example.rego",
+    input: "/examples/example1/input.json",
+  },
+};
+
+/**
+ * Load examples from internet
+ * @param {{policy: string, input: string, data: string}}  
+ * @returns {{policy: string, input: string, data: string}} Content of given 3 files
+ */
+async function loadExample({ policy, input, data }) {
+  const res1 = await fetch(policy);
+  const text1 = await res1.text();
+
+  const res2 = await fetch(input);
+  const text2 = await res2.text();
+
+  // Data file is optional, if file missing, default to {}
+  let text3 = "{}";
+  if (data) {
+    const res3 = await fetch(input);
+    text3 = await res3.text();
+  }
+
+  return {
+    policy: text1,
+    input: text2,
+    data: text3,
+  };
+}
+
 function App() {
   const [engine, setEngine] = useState(null);
+  const [result, setResult] = useState("");
+
   const editorPolicyRef = useRef(null);
   const editorInputRef = useRef(null);
   const editorDataRef = useRef(null);
@@ -129,20 +164,22 @@ function App() {
     let files = policy.split(SEPARATOR);
 
     try {
-      var startTime = new Date();
-      var engine = new Engine();
-      for (var i = 0; i < files.length; ++i) {
+      let startTime = new Date();
+      let engine = new Engine();
+      for (let i = 0; i < files.length; ++i) {
         engine.add_policy("policy.rego", files[i]);
       }
 
       engine.set_input(editorInputRef.current.getValue());
       engine.add_data(editorDataRef.current.getValue());
-      let parse_time = new Date() - startTime;
 
+      let parse_time = new Date() - startTime;
       let results = engine.eval_query("data");
-      var elapsed = new Date() - startTime;
-      let output = `// Evaluation took ${elapsed} milliseconds. parse = ${parse_time}, eval = ${elapsed - parse_time}\n${results}`;
-      editorOutputRef.current.setValue(output);
+      let elapsed = new Date() - startTime;
+
+      let output = `Evaluation took ${elapsed} milliseconds. parse = ${parse_time}, eval = ${elapsed - parse_time}`;
+      setResult(output);
+      editorOutputRef.current.setValue(results);
     } catch (error) {
       editorOutputRef.current.setValue(error);
     }
@@ -154,9 +191,23 @@ function App() {
         {/* Header for things like Evaluate/Format/Publish buttons */}
         <header className="my-2 flex flex-none justify-between">
           <h2 className="ml-6 text-2xl font-bold">Regorus Playground</h2>
+
           <div className="mr-6">
             <button
-              className="mr-8 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              className="mx-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+              onClick={async () => {
+                const { policy, input, data } = await loadExample(EXAMPLES.example1);
+
+                editorPolicyRef.current.setValue(policy);
+                editorInputRef.current.setValue(input);
+                editorDataRef.current.setValue(data);
+              }}
+            >
+              Load Example 1
+            </button>
+
+            <button
+              className="mx-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
               onClick={onClickEvaluate}
             >
               Evaluate
@@ -181,7 +232,7 @@ function App() {
                     REGO_LANGUAGE,
                   );
                 }}
-                onMount={(editor, monaco) => {
+                onMount={(editor) => {
                   editorPolicyRef.current = editor;
                 }}
               />
@@ -196,7 +247,7 @@ function App() {
                   className="flex-1"
                   defaultLanguage="json"
                   defaultValue="{}"
-                  onMount={(editor, monaco) => {
+                  onMount={(editor) => {
                     editorInputRef.current = editor;
                   }}
                 />
@@ -209,7 +260,7 @@ function App() {
                   className="flex-1"
                   defaultLanguage="json"
                   defaultValue="{}"
-                  onMount={(editor, monaco) => {
+                  onMount={(editor) => {
                     editorDataRef.current = editor;
                   }}
                 />
@@ -217,7 +268,9 @@ function App() {
 
               {/* Third window - Output */}
               <div className="flex flex-1 flex-col">
-                <div className="flex-1 text-sm font-bold">Output</div>
+                <div className="flex-1 text-sm font-bold">
+                  Output - {result}
+                </div>
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
@@ -228,7 +281,7 @@ function App() {
                       enabled: false,
                     },
                   }}
-                  onMount={(editor, monaco) => {
+                  onMount={(editor) => {
                     editorOutputRef.current = editor;
                   }}
                 />
