@@ -167,8 +167,12 @@ function App() {
             {/* Left window - Rego policy data */}
             <div className="flex-auto">
               <Editor
-                defaultLanguage="javascript"
-                defaultValue="Rego policy goes here"
+                defaultLanguage="Rego"
+                defaultValue={`package test\nallow = false`}
+                beforeMount={(monaco) => {
+                  monaco.languages.register({ id: 'Rego' })
+                  monaco.languages.setMonarchTokensProvider('Rego', REGO_LANGUAGE)
+                }}
                 onMount={(editor, monaco) => {
                   editorPolicyRef.current = editor;
                 }}
@@ -180,8 +184,8 @@ function App() {
               {/* First window - Input */}
               <div className="flex-auto">
                 <Editor
-                  defaultLanguage="javascript"
-                  defaultValue="Input goes here"
+                  defaultLanguage="json"
+                  defaultValue="{}"
                   onMount={(editor, monaco) => {
                     editorInputRef.current = editor;
                   }}
@@ -191,8 +195,8 @@ function App() {
               {/* Second window - Data */}
               <div className="flex-auto">
                 <Editor
-                  defaultLanguage="javascript"
-                  defaultValue="Data goes here"
+                  defaultLanguage="json"
+                  defaultValue="{}"
                   onMount={(editor, monaco) => {
                     editorDataRef.current = editor;
                   }}
@@ -202,7 +206,7 @@ function App() {
               {/* Third window - Output */}
               <div className="flex-auto">
                 <Editor
-                  defaultLanguage="javascript"
+                  defaultLanguage="json"
                   defaultValue="Output goes here"
                   onMount={(editor, monaco) => {
                     editorOutputRef.current = editor;
