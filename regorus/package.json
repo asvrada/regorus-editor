@@ -1,0 +1,26 @@
+{
+  "name": "regorus",
+  "description": "A fast, lightweight Rego (OPA policy language) interpreter",
+  "version": "0.1.0-alpha.2",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/regorus"
+  },
+  "files": [
+    "regorus_bg.wasm",
+    "regorus.js",
+    "regorus.d.ts"
+  ],
+  "module": "regorus.js",
+  "types": "regorus.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ],
+  "keywords": [
+    "interpreter",
+    "opa",
+    "policy-as-code",
+    "rego"
+  ]
+}
