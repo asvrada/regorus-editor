@@ -152,8 +152,8 @@ function App() {
     <>
       <div className="flex h-screen flex-col bg-slate-300">
         {/* Header for things like Evaluate/Format/Publish buttons */}
-        <header className="my-2 flex-none flex flex-row-reverse">
-          <button 
+        <header className="my-2 flex flex-none flex-row-reverse">
+          <button
             className="mr-8 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
             onClick={onClickEvaluate}
           >
@@ -170,8 +170,11 @@ function App() {
                 defaultLanguage="Rego"
                 defaultValue={`package test\nallow = false`}
                 beforeMount={(monaco) => {
-                  monaco.languages.register({ id: 'Rego' })
-                  monaco.languages.setMonarchTokensProvider('Rego', REGO_LANGUAGE)
+                  monaco.languages.register({ id: "Rego" });
+                  monaco.languages.setMonarchTokensProvider(
+                    "Rego",
+                    REGO_LANGUAGE,
+                  );
                 }}
                 onMount={(editor, monaco) => {
                   editorPolicyRef.current = editor;
@@ -182,8 +185,10 @@ function App() {
             {/* Right Column for a list of windows */}
             <div className="flex flex-auto flex-col space-y-4">
               {/* First window - Input */}
-              <div className="flex-auto">
+              <div className="flex flex-1 flex-col">
+                <div className="h-8 flex-1">Input</div>
                 <Editor
+                  className="flex-1"
                   defaultLanguage="json"
                   defaultValue="{}"
                   onMount={(editor, monaco) => {
@@ -193,8 +198,10 @@ function App() {
               </div>
 
               {/* Second window - Data */}
-              <div className="flex-auto">
+              <div className="flex flex-1 flex-col">
+              <div className="h-8 flex-1">Data</div>
                 <Editor
+                  className="flex-1"
                   defaultLanguage="json"
                   defaultValue="{}"
                   onMount={(editor, monaco) => {
@@ -204,10 +211,12 @@ function App() {
               </div>
 
               {/* Third window - Output */}
-              <div className="flex-auto">
+              <div className="flex flex-1 flex-col">
+              <div className="h-8 flex-1">Output</div>
                 <Editor
+                  className="flex-1"
                   defaultLanguage="json"
-                  defaultValue="Output goes here"
+                  defaultValue="// Output goes here"
                   onMount={(editor, monaco) => {
                     editorOutputRef.current = editor;
                   }}
