@@ -140,11 +140,10 @@ async function loadExample({ policy, input, data }) {
   };
 }
 
-const defaultExample = await loadExample(EXAMPLES.example1);
-
 function App() {
   const [engine, setEngine] = useState(null);
   const [result, setResult] = useState("");
+  const [defaultExample, setDefaultExample] = useState(null);
 
   const editorPolicyRef = useRef(null);
   const editorInputRef = useRef(null);
@@ -153,11 +152,15 @@ function App() {
 
   useEffect(() => {
     init().then(() => {
+      loadExample(EXAMPLES.example1).then((data) => {
+        setDefaultExample(data);
+      });
+
       setEngine(new Engine());
     });
   }, []);
 
-  if (engine === null) {
+  if (engine === null || defaultExample === null) {
     return <div>Loading...</div>;
   }
 
@@ -179,7 +182,7 @@ function App() {
       let results = engine.eval_query("data");
       let elapsed = new Date() - startTime;
 
-      let output = `Evaluation took ${elapsed} milliseconds. parse = ${parse_time}, eval = ${elapsed - parse_time}`;
+      let output = ` - Evaluation took ${elapsed} milliseconds. parse = ${parse_time}, eval = ${elapsed - parse_time}`;
       setResult(output);
       editorOutputRef.current.setValue(results);
     } catch (error) {
@@ -286,7 +289,7 @@ function App() {
 
             {/* Third window - Output */}
             <div className="flex flex-1 flex-col">
-              <div className="flex-1 text-sm font-bold">Output - {result}</div>
+              <div className="flex-1 text-sm font-bold">Output {result}</div>
               <Editor
                 className="flex-1"
                 defaultLanguage="json"
