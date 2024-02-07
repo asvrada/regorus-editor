@@ -1,4 +1,4 @@
-name: Build
+name: Build and Deploy to GH Pages
 on:
   push:
     branches:
@@ -17,3 +17,8 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
