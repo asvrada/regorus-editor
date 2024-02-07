@@ -57,12 +57,12 @@ const REGO_LANGUAGE = {
   ],
 
   // we include these common regular expressions
-  symbols: /[=><!~?:&|+\-*\/\^%]+/,
+  symbols: /[=><!~?:&|+\-*/^%]+/,
 
   tokenizer: {
     root: [
       [
-        /[a-zA-Z'_\?\\][\w'\?\\]*/,
+        /[a-zA-Z'_?\\][\w'?\\]*/,
         {
           cases: {
             "@keywords": "keyword",
@@ -77,7 +77,7 @@ const REGO_LANGUAGE = {
       [/`[^\\`]*`/, "string"],
 
       // delimiters and operators
-      [/[{}()\[\]]/, "@brackets"],
+      [/[{}()[\]]/, "@brackets"],
       [/[<>](?!@symbols)/, "@brackets"],
 
       [
@@ -91,7 +91,7 @@ const REGO_LANGUAGE = {
       ],
 
       // numbers
-      [/[0-9_]*\.[0-9_]+([eE][\-+]?\d+)?[fFdD]?/, "number.float"],
+      [/[0-9_]*\.[0-9_]+([eE][-+]?\d+)?[fFdD]?/, "number.float"],
       [/[0-9_]+/, "number"],
 
       // delimiter: after number because of .\d floats
