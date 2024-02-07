@@ -140,6 +140,8 @@ async function loadExample({ policy, input, data }) {
   };
 }
 
+const defaultExample = await loadExample(EXAMPLES.example1);
+
 function App() {
   const [engine, setEngine] = useState(null);
   const [result, setResult] = useState("");
@@ -224,7 +226,12 @@ function App() {
             <div className="flex-auto">
               <Editor
                 defaultLanguage="Rego"
-                defaultValue={`package test\nallow = false`}
+                defaultValue={defaultExample.policy}
+                options={{
+                  minimap: {
+                    enabled: false
+                  }
+                }}
                 beforeMount={(monaco) => {
                   monaco.languages.register({ id: "Rego" });
                   monaco.languages.setMonarchTokensProvider(
@@ -246,7 +253,12 @@ function App() {
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
-                  defaultValue="{}"
+                  defaultValue={defaultExample.input}
+                  options={{
+                    minimap: {
+                      enabled: false
+                    }
+                  }}
                   onMount={(editor) => {
                     editorInputRef.current = editor;
                   }}
@@ -259,7 +271,12 @@ function App() {
                 <Editor
                   className="flex-1"
                   defaultLanguage="json"
-                  defaultValue="{}"
+                  defaultValue={defaultExample.data}
+                  options={{
+                    minimap: {
+                      enabled: false
+                    }
+                  }}
                   onMount={(editor) => {
                     editorDataRef.current = editor;
                   }}
