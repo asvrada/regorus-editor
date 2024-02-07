@@ -141,7 +141,7 @@ async function loadExample({ policy, input, data }) {
 }
 
 function App() {
-  const [engine, setEngine] = useState(null);
+  const [engineReady, setEngineReady] = useState(false);
   const [result, setResult] = useState("");
   const [defaultExample, setDefaultExample] = useState(null);
 
@@ -156,11 +156,11 @@ function App() {
         setDefaultExample(data);
       });
 
-      setEngine(new Engine());
+      setEngineReady(true);
     });
   }, []);
 
-  if (engine === null || defaultExample === null) {
+  if (!engineReady || defaultExample === null) {
     return <div>Loading...</div>;
   }
 
