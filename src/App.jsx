@@ -109,8 +109,8 @@ const REGO_LANGUAGE = {
 
 const EXAMPLES = {
   example1: {
-    policy: "/examples/example1/example.rego",
-    input: "/examples/example1/input.json",
+    policy: "./examples/example1/example.rego",
+    input: "./examples/example1/input.json",
   },
 };
 
