@@ -4,6 +4,7 @@ import Editor from "@monaco-editor/react";
 import init, { Engine } from "regorus";
 
 import "./App.css";
+import NavBar from "./components/NavBar";
 
 const SEPARATOR = "\n###POLICY###\n";
 const REGO_LANGUAGE = {
@@ -192,36 +193,17 @@ function App() {
 
   return (
     <div className="flex h-screen flex-col bg-slate-300">
-      {/* Header for things like Evaluate/Format/Publish buttons */}
-      <header className="my-2 flex flex-none justify-between">
-        <h2 className="ml-6 text-2xl font-bold">Regorus Playground</h2>
+      {/* Nav Bar */}
+      <NavBar
+        callbackEvaluate={onClickEvaluate}
+        callbackLoadExample={async () => {
+          const { policy, input, data } = await loadExample(EXAMPLES.example1);
 
-        <div className="mr-6">
-          <button
-            className="mx-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-            onClick={async () => {
-              const { policy, input, data } = await loadExample(
-                EXAMPLES.example1,
-              );
-
-              editorPolicyRef.current.setValue(policy);
-              editorInputRef.current.setValue(input);
-              editorDataRef.current.setValue(data);
-            }}
-          >
-            Load Example 1
-          </button>
-
-          <button
-            className="mx-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-            onClick={onClickEvaluate}
-          >
-            Evaluate
-          </button>
-
-          <a href="https://github.com/microsoft/regorus">GitHub Icon</a>
-        </div>
-      </header>
+          editorPolicyRef.current.setValue(policy);
+          editorInputRef.current.setValue(input);
+          editorDataRef.current.setValue(data);
+        }}
+      />
 
       {/* Main Editor body */}
       <div className="flex-auto grow">
