@@ -237,6 +237,7 @@ function App() {
               defaultLanguage="json"
               defaultValue={defaultExample.input}
               options={{
+                automaticLayout: true,
                 minimap: {
                   enabled: false,
                 },
@@ -255,6 +256,7 @@ function App() {
               defaultLanguage="json"
               defaultValue={defaultExample.data}
               options={{
+                automaticLayout: true,
                 minimap: {
                   enabled: false,
                 },
@@ -273,6 +275,7 @@ function App() {
               defaultLanguage="json"
               defaultValue="// Output goes here"
               options={{
+                automaticLayout: true,
                 readOnly: true,
                 minimap: {
                   enabled: false,
