@@ -42,6 +42,9 @@ async function loadExample({ policy, input, data }) {
 }
 
 function App() {
+  const isDragging = useRef(false);
+  const [widthPolicyEditor, setWidthPolicyEditor] = useState(400);
+
   const [engineReady, setEngineReady] = useState(false);
   const [result, setResult] = useState("");
   const [defaultExample, setDefaultExample] = useState(null);
@@ -58,6 +61,29 @@ function App() {
       });
 
       setEngineReady(true);
+
+      // Set window width
+      setWidthPolicyEditor(window.innerWidth / 2);
+
+      // Register listeners
+      function handleMouseMove(event) {
+        if (isDragging.current) {
+          // 6 = half width of divider
+          setWidthPolicyEditor(event.clientX - 6);
+        }
+      }
+
+      function handleMouseUp() {
+        isDragging.current = false;
+      }
+
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
     });
   }, []);
 
@@ -92,7 +118,7 @@ function App() {
   }
 
   const componentLeftPanel = (
-    <div className="flex-auto">
+    <div className="grow-0 shrink-0" style={{flexBasis: widthPolicyEditor}}>
       <Editor
         width="99%"
         height="99%"
@@ -201,9 +227,17 @@ function App() {
       />
 
       {/* Main Editor body */}
-      <div className="flex flex-auto space-x-4">
+      <div className="flex flex-auto">
         {/* Left window - Rego policy */}
         {componentLeftPanel}
+
+        {/* Drag-to-resize divider */}
+        <div
+          onMouseDown={() => {
+            isDragging.current = true;
+          }}
+          className="h-full w-3 cursor-col-resize"
+        ></div>
 
         {/* Right Column for a list of windows */}
         {componentRightPanel}
