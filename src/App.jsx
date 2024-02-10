@@ -3,110 +3,10 @@ import Editor from "@monaco-editor/react";
 
 import init, { Engine } from "regorus";
 
-import "./App.css";
 import NavBar from "./components/NavBar";
+import { REGO_LANGUAGE, SEPARATOR } from "./const";
 
-const SEPARATOR = "\n###POLICY###\n";
-const REGO_LANGUAGE = {
-  //	  defaultToken: 'invalid',
-
-  keywords: [
-    "as",
-    "contains",
-    "default",
-    "else",
-    "every",
-    "false",
-    "if",
-    "import",
-    "in",
-    "not",
-    "null",
-    "package",
-    "set(",
-    "some",
-    "true",
-    "with",
-  ],
-
-  brackets: [
-    ["{", "}", "delimiter.curly"],
-    ["[", "]", "delimiter.square"],
-    ["(", ")", "delimiter.parenthesis"],
-  ],
-
-  operators: [
-    "+",
-    "-",
-    "*",
-    "/",
-    "%",
-    "&",
-    "|",
-    ",",
-    ";",
-    ".",
-    ":",
-    "<",
-    "<=",
-    "=",
-    "==",
-    ">",
-    ">=",
-    "!",
-    "!=",
-  ],
-
-  // we include these common regular expressions
-  symbols: /[=><!~?:&|+\-*/^%]+/,
-
-  tokenizer: {
-    root: [
-      [
-        /[a-zA-Z'_?\\][\w'?\\]*/,
-        {
-          cases: {
-            "@keywords": "keyword",
-            "@default": "identifier",
-          },
-        },
-      ],
-
-      [":=", "keyword"],
-
-      [/"[^\\"]*"/, "string"],
-      [/`[^\\`]*`/, "string"],
-
-      // delimiters and operators
-      [/[{}()[\]]/, "@brackets"],
-      [/[<>](?!@symbols)/, "@brackets"],
-
-      [
-        /@symbols/,
-        {
-          cases: {
-            "@operators": "delimiter",
-            "@default": "",
-          },
-        },
-      ],
-
-      // numbers
-      [/[0-9_]*\.[0-9_]+([eE][-+]?\d+)?[fFdD]?/, "number.float"],
-      [/[0-9_]+/, "number"],
-
-      // delimiter: after number because of .\d floats
-      [/[;,.]/, "delimiter"],
-      // whitespace
-      { include: "@whitespace" },
-    ],
-
-    whitespace: [
-      [/[ \t\r\n]+/, "white"],
-      [/#.*$/, "comment"],
-    ],
-  },
-};
+import "./App.css";
 
 const EXAMPLES = {
   example1: {
@@ -195,6 +95,7 @@ function App() {
     <div className="flex h-screen flex-col bg-slate-300">
       {/* Nav Bar */}
       <NavBar
+        className="flex-none"
         callbackEvaluate={onClickEvaluate}
         callbackLoadExample={async () => {
           const { policy, input, data } = await loadExample(EXAMPLES.example1);
@@ -206,87 +107,89 @@ function App() {
       />
 
       {/* Main Editor body */}
-      <div className="flex-auto grow">
-        <div className="flex h-full flex-row space-x-4">
-          {/* Left window - Rego policy */}
-          <div className="flex-auto">
+      <div className="flex flex-auto space-x-4">
+        {/* Left window - Rego policy */}
+        <div className="flex-auto">
+          <Editor
+            // wrapperProps={{ className: "flex-auto" }}
+            // className="flex-1 "
+            // height="99%"
+            defaultLanguage="Rego"
+            defaultValue={defaultExample.policy}
+            options={{
+              automaticLayout: true,
+              minimap: {
+                enabled: false,
+              },
+            }}
+            beforeMount={(monaco) => {
+              monaco.languages.register({ id: "Rego" });
+              monaco.languages.setMonarchTokensProvider("Rego", REGO_LANGUAGE);
+            }}
+            onMount={(editor) => {
+              editorPolicyRef.current = editor;
+            }}
+          />
+        </div>
+
+        {/* Right Column for a list of windows */}
+        <div className="flex flex-auto flex-col space-y-1">
+          {/* First window - Input */}
+          <div className="flex flex-1 flex-col">
+            <div className="flex-1 text-sm font-bold">Input Editor</div>
             <Editor
-              defaultLanguage="Rego"
-              defaultValue={defaultExample.policy}
+              className="flex-1"
+              defaultLanguage="json"
+              defaultValue={defaultExample.input}
               options={{
+                automaticLayout: true,
                 minimap: {
                   enabled: false,
                 },
               }}
-              beforeMount={(monaco) => {
-                monaco.languages.register({ id: "Rego" });
-                monaco.languages.setMonarchTokensProvider(
-                  "Rego",
-                  REGO_LANGUAGE,
-                );
-              }}
               onMount={(editor) => {
-                editorPolicyRef.current = editor;
+                editorInputRef.current = editor;
               }}
             />
           </div>
 
-          {/* Right Column for a list of windows */}
-          <div className="flex flex-auto flex-col space-y-1">
-            {/* First window - Input */}
-            <div className="flex flex-1 flex-col">
-              <div className="flex-1 text-sm font-bold">Input Editor</div>
-              <Editor
-                className="flex-1"
-                defaultLanguage="json"
-                defaultValue={defaultExample.input}
-                options={{
-                  minimap: {
-                    enabled: false,
-                  },
-                }}
-                onMount={(editor) => {
-                  editorInputRef.current = editor;
-                }}
-              />
-            </div>
+          {/* Second window - Data */}
+          <div className="flex flex-1 flex-col">
+            <div className="flex-1 text-sm font-bold">Data Editor</div>
+            <Editor
+              className="flex-1"
+              defaultLanguage="json"
+              defaultValue={defaultExample.data}
+              options={{
+                automaticLayout: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
+              onMount={(editor) => {
+                editorDataRef.current = editor;
+              }}
+            />
+          </div>
 
-            {/* Second window - Data */}
-            <div className="flex flex-1 flex-col">
-              <div className="flex-1 text-sm font-bold">Data Editor</div>
-              <Editor
-                className="flex-1"
-                defaultLanguage="json"
-                defaultValue={defaultExample.data}
-                options={{
-                  minimap: {
-                    enabled: false,
-                  },
-                }}
-                onMount={(editor) => {
-                  editorDataRef.current = editor;
-                }}
-              />
-            </div>
-
-            {/* Third window - Output */}
-            <div className="flex flex-1 flex-col">
-              <div className="flex-1 text-sm font-bold">Output {result}</div>
-              <Editor
-                className="flex-1"
-                defaultLanguage="json"
-                defaultValue="// Output goes here"
-                options={{
-                  readOnly: true,
-                  minimap: {
-                    enabled: false,
-                  },
-                }}
-                onMount={(editor) => {
-                  editorOutputRef.current = editor;
-                }}
-              />
-            </div>
+          {/* Third window - Output */}
+          <div className="flex flex-1 flex-col">
+            <div className="flex-1 text-sm font-bold">Output {result}</div>
+            <Editor
+              className="flex-1"
+              defaultLanguage="json"
+              defaultValue="// Output goes here"
+              options={{
+                automaticLayout: true,
+                readOnly: true,
+                minimap: {
+                  enabled: false,
+                },
+              }}
+              onMount={(editor) => {
+                editorOutputRef.current = editor;
+              }}
+            />
           </div>
         </div>
       </div>

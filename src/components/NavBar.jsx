@@ -1,8 +1,12 @@
 import GithubMark from "../assets/github-mark.svg?react";
 
-export default function NavBar({ callbackLoadExample, callbackEvaluate }) {
+export default function NavBar({
+  className,
+  callbackLoadExample,
+  callbackEvaluate,
+}) {
   return (
-    <nav className="">
+    <nav className={className}>
       <div className="mx-auto flex flex-wrap items-center justify-between px-4 py-2">
         <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
           Regorus Playground
