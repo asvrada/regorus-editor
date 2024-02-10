@@ -91,11 +91,105 @@ function App() {
     }
   }
 
+  const componentLeftPanel = (
+    <div className="flex-auto">
+      <Editor
+        width="99%"
+        height="99%"
+        defaultLanguage="Rego"
+        defaultValue={defaultExample.policy}
+        options={{
+          automaticLayout: true,
+          minimap: {
+            enabled: false,
+          },
+        }}
+        beforeMount={(monaco) => {
+          monaco.languages.register({ id: "Rego" });
+          monaco.languages.setMonarchTokensProvider("Rego", REGO_LANGUAGE);
+        }}
+        onMount={(editor) => {
+          editorPolicyRef.current = editor;
+        }}
+      />
+    </div>
+  );
+
+  const componentRightPanel = (
+    <div className="flex flex-auto flex-col space-y-1">
+      {/* First window - Input */}
+      <div className="panel">
+        <div className="title">Input Editor</div>
+        <div className="editor">
+          <Editor
+            width="99%"
+            height="99%"
+            defaultLanguage="json"
+            defaultValue={defaultExample.input}
+            options={{
+              automaticLayout: true,
+              minimap: {
+                enabled: false,
+              },
+            }}
+            onMount={(editor) => {
+              editorInputRef.current = editor;
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Second window - Data */}
+      <div className="panel">
+        <div className="title">Data Editor</div>
+        <div className="editor">
+          <Editor
+            width="99%"
+            height="99%"
+            defaultLanguage="json"
+            defaultValue={defaultExample.data}
+            options={{
+              automaticLayout: true,
+              minimap: {
+                enabled: false,
+              },
+            }}
+            onMount={(editor) => {
+              editorDataRef.current = editor;
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Third window - Output */}
+      <div className="panel">
+        <div className="title">Output {result}</div>
+        <div className="editor">
+          <Editor
+            width="99%"
+            height="99%"
+            defaultLanguage="json"
+            defaultValue="// Output goes here"
+            options={{
+              automaticLayout: true,
+              readOnly: true,
+              minimap: {
+                enabled: false,
+              },
+            }}
+            onMount={(editor) => {
+              editorOutputRef.current = editor;
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex h-screen flex-col bg-slate-300">
       {/* Nav Bar */}
       <NavBar
-        className="flex-none"
         callbackEvaluate={onClickEvaluate}
         callbackLoadExample={async () => {
           const { policy, input, data } = await loadExample(EXAMPLES.example1);
@@ -109,89 +203,10 @@ function App() {
       {/* Main Editor body */}
       <div className="flex flex-auto space-x-4">
         {/* Left window - Rego policy */}
-        <div className="flex-auto">
-          <Editor
-            // wrapperProps={{ className: "flex-auto" }}
-            // className="flex-1 "
-            // height="99%"
-            defaultLanguage="Rego"
-            defaultValue={defaultExample.policy}
-            options={{
-              automaticLayout: true,
-              minimap: {
-                enabled: false,
-              },
-            }}
-            beforeMount={(monaco) => {
-              monaco.languages.register({ id: "Rego" });
-              monaco.languages.setMonarchTokensProvider("Rego", REGO_LANGUAGE);
-            }}
-            onMount={(editor) => {
-              editorPolicyRef.current = editor;
-            }}
-          />
-        </div>
+        {componentLeftPanel}
 
         {/* Right Column for a list of windows */}
-        <div className="flex flex-auto flex-col space-y-1">
-          {/* First window - Input */}
-          <div className="flex flex-1 flex-col">
-            <div className="flex-1 text-sm font-bold">Input Editor</div>
-            <Editor
-              className="flex-1"
-              defaultLanguage="json"
-              defaultValue={defaultExample.input}
-              options={{
-                automaticLayout: true,
-                minimap: {
-                  enabled: false,
-                },
-              }}
-              onMount={(editor) => {
-                editorInputRef.current = editor;
-              }}
-            />
-          </div>
-
-          {/* Second window - Data */}
-          <div className="flex flex-1 flex-col">
-            <div className="flex-1 text-sm font-bold">Data Editor</div>
-            <Editor
-              className="flex-1"
-              defaultLanguage="json"
-              defaultValue={defaultExample.data}
-              options={{
-                automaticLayout: true,
-                minimap: {
-                  enabled: false,
-                },
-              }}
-              onMount={(editor) => {
-                editorDataRef.current = editor;
-              }}
-            />
-          </div>
-
-          {/* Third window - Output */}
-          <div className="flex flex-1 flex-col">
-            <div className="flex-1 text-sm font-bold">Output {result}</div>
-            <Editor
-              className="flex-1"
-              defaultLanguage="json"
-              defaultValue="// Output goes here"
-              options={{
-                automaticLayout: true,
-                readOnly: true,
-                minimap: {
-                  enabled: false,
-                },
-              }}
-              onMount={(editor) => {
-                editorOutputRef.current = editor;
-              }}
-            />
-          </div>
-        </div>
+        {componentRightPanel}
       </div>
     </div>
   );

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* For the panels in right column */
+    .panel {
+        @apply flex flex-col flex-auto;
+    }
+
+    /* Title of the Editor */
+    .title {
+        @apply text-sm font-bold flex-1;
+    }
+
+    .editor {
+        @apply flex flex-auto;
+    }
+}
