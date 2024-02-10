@@ -195,6 +195,7 @@ function App() {
     <div className="flex h-screen flex-col bg-slate-300">
       {/* Nav Bar */}
       <NavBar
+        className="flex-none"
         callbackEvaluate={onClickEvaluate}
         callbackLoadExample={async () => {
           const { policy, input, data } = await loadExample(EXAMPLES.example1);
@@ -206,13 +207,17 @@ function App() {
       />
 
       {/* Main Editor body */}
-      <div className="flex h-full space-x-4">
+      <div className="flex flex-auto space-x-4">
         {/* Left window - Rego policy */}
         <div className="flex-auto">
           <Editor
+            // wrapperProps={{ className: "flex-auto" }}
+            // className="flex-1 "
+            // height="99%"
             defaultLanguage="Rego"
             defaultValue={defaultExample.policy}
             options={{
+              automaticLayout: true,
               minimap: {
                 enabled: false,
               },
