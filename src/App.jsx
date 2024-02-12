@@ -102,8 +102,8 @@ function App() {
         engine.add_policy("policy.rego", files[i]);
       }
 
-      engine.set_input(editorInputRef.current.getValue());
-      engine.add_data(editorDataRef.current.getValue());
+      engine.set_input_json(editorInputRef.current.getValue());
+      engine.add_data_json(editorDataRef.current.getValue());
 
       let parse_time = new Date() - startTime;
       let results = engine.eval_query("data");

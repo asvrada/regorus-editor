@@ -1,25 +1,5 @@
 let wasm;
 
-const heap = new Array(128).fill(undefined);
-
-heap.push(undefined, null, true, false);
-
-function getObject(idx) { return heap[idx]; }
-
-let heap_next = heap.length;
-
-function dropObject(idx) {
-    if (idx < 132) return;
-    heap[idx] = heap_next;
-    heap_next = idx;
-}
-
-function takeObject(idx) {
-    const ret = getObject(idx);
-    dropObject(idx);
-    return ret;
-}
-
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
@@ -38,6 +18,12 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 
+const heap = new Array(128).fill(undefined);
+
+heap.push(undefined, null, true, false);
+
+let heap_next = heap.length;
+
 function addHeapObject(obj) {
     if (heap_next === heap.length) heap.push(heap.length + 1);
     const idx = heap_next;
@@ -45,6 +31,20 @@ function addHeapObject(obj) {
 
     heap[idx] = obj;
     return idx;
+}
+
+function getObject(idx) { return heap[idx]; }
+
+function dropObject(idx) {
+    if (idx < 132) return;
+    heap[idx] = heap_next;
+    heap_next = idx;
+}
+
+function takeObject(idx) {
+    const ret = getObject(idx);
+    dropObject(idx);
+    return ret;
 }
 
 let WASM_VECTOR_LEN = 0;
@@ -119,16 +119,9 @@ function handleError(f, args) {
     }
 }
 /**
+* WASM wrapper for [`regorus::Engine`]
 */
 export class Engine {
-
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(Engine.prototype);
-        obj.__wbg_ptr = ptr;
-
-        return obj;
-    }
 
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
@@ -142,6 +135,9 @@ export class Engine {
         wasm.__wbg_engine_free(ptr);
     }
     /**
+    * Construct a new Engine
+    *
+    * See https://docs.rs/regorus/latest/regorus/struct.Engine.html
     */
     constructor() {
         const ret = wasm.engine_new();
@@ -149,13 +145,13 @@ export class Engine {
         return this;
     }
     /**
-    * @returns {Engine}
-    */
-    clone_engine() {
-        const ret = wasm.engine_clone_engine(this.__wbg_ptr);
-        return Engine.__wrap(ret);
-    }
-    /**
+    * Add a policy
+    *
+    * The policy is parsed into AST.
+    * See https://docs.rs/regorus/latest/regorus/struct.Engine.html#method.add_policy
+    *
+    * * `path`: A filename to be associated with the policy.
+    * * `rego`: Rego policy.
     * @param {string} path
     * @param {string} rego
     */
@@ -177,14 +173,18 @@ export class Engine {
         }
     }
     /**
+    * Add policy data.
+    *
+    * See https://docs.rs/regorus/latest/regorus/struct.Engine.html#method.add_data
+    * * `data`: JSON encoded value to be used as policy data.
     * @param {string} data
     */
-    add_data(data) {
+    add_data_json(data) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             const ptr0 = passStringToWasm0(data, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
             const len0 = WASM_VECTOR_LEN;
-            wasm.engine_add_data(retptr, this.__wbg_ptr, ptr0, len0);
+            wasm.engine_add_data_json(retptr, this.__wbg_ptr, ptr0, len0);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             if (r1) {
@@ -195,14 +195,36 @@ export class Engine {
         }
     }
     /**
+    * Clear policy data.
+    *
+    * See https://docs.rs/regorus/0.1.0-alpha.2/regorus/struct.Engine.html#method.clear_data
+    */
+    clear_data() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.engine_clear_data(retptr, this.__wbg_ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            if (r1) {
+                throw takeObject(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * Set input.
+    *
+    * See https://docs.rs/regorus/0.1.0-alpha.2/regorus/struct.Engine.html#method.set_input
+    * * `input`: JSON encoded value to be used as input to query.
     * @param {string} input
     */
-    set_input(input) {
+    set_input_json(input) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             const ptr0 = passStringToWasm0(input, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
             const len0 = WASM_VECTOR_LEN;
-            wasm.engine_set_input(retptr, this.__wbg_ptr, ptr0, len0);
+            wasm.engine_set_input_json(retptr, this.__wbg_ptr, ptr0, len0);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             if (r1) {
@@ -213,6 +235,10 @@ export class Engine {
         }
     }
     /**
+    * Evaluate query.
+    *
+    * See https://docs.rs/regorus/0.1.0-alpha.2/regorus/struct.Engine.html#method.eval_query
+    * * `query`: Rego expression to be evaluate.
     * @param {string} query
     * @returns {string}
     */
@@ -278,9 +304,6 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
-    };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
@@ -288,6 +311,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_number_new = function(arg0) {
         const ret = arg0;
         return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
     };
     imports.wbg.__wbg_crypto_d05b68a3572bb8ca = function(arg0) {
         const ret = getObject(arg0).crypto;

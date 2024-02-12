@@ -1,30 +1,55 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+* WASM wrapper for [`regorus::Engine`]
 */
 export class Engine {
   free(): void;
 /**
+* Construct a new Engine
+*
+* See https://docs.rs/regorus/latest/regorus/struct.Engine.html
 */
   constructor();
 /**
-* @returns {Engine}
-*/
-  clone_engine(): Engine;
-/**
+* Add a policy
+*
+* The policy is parsed into AST.
+* See https://docs.rs/regorus/latest/regorus/struct.Engine.html#method.add_policy
+*
+* * `path`: A filename to be associated with the policy.
+* * `rego`: Rego policy.
 * @param {string} path
 * @param {string} rego
 */
   add_policy(path: string, rego: string): void;
 /**
+* Add policy data.
+*
+* See https://docs.rs/regorus/latest/regorus/struct.Engine.html#method.add_data
+* * `data`: JSON encoded value to be used as policy data.
 * @param {string} data
 */
-  add_data(data: string): void;
+  add_data_json(data: string): void;
 /**
+* Clear policy data.
+*
+* See https://docs.rs/regorus/0.1.0-alpha.2/regorus/struct.Engine.html#method.clear_data
+*/
+  clear_data(): void;
+/**
+* Set input.
+*
+* See https://docs.rs/regorus/0.1.0-alpha.2/regorus/struct.Engine.html#method.set_input
+* * `input`: JSON encoded value to be used as input to query.
 * @param {string} input
 */
-  set_input(input: string): void;
+  set_input_json(input: string): void;
 /**
+* Evaluate query.
+*
+* See https://docs.rs/regorus/0.1.0-alpha.2/regorus/struct.Engine.html#method.eval_query
+* * `query`: Rego expression to be evaluate.
 * @param {string} query
 * @returns {string}
 */
@@ -37,10 +62,10 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_engine_free: (a: number) => void;
   readonly engine_new: () => number;
-  readonly engine_clone_engine: (a: number) => number;
   readonly engine_add_policy: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
-  readonly engine_add_data: (a: number, b: number, c: number, d: number) => void;
-  readonly engine_set_input: (a: number, b: number, c: number, d: number) => void;
+  readonly engine_add_data_json: (a: number, b: number, c: number, d: number) => void;
+  readonly engine_clear_data: (a: number, b: number) => void;
+  readonly engine_set_input_json: (a: number, b: number, c: number, d: number) => void;
   readonly engine_eval_query: (a: number, b: number, c: number, d: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
