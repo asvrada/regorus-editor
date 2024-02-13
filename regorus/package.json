@@ -1,11 +1,10 @@
 {
-  "name": "regorus",
-  "description": "A fast, lightweight Rego (OPA policy language) interpreter",
-  "version": "0.1.0-alpha.2",
-  "license": "SEE LICENSE IN LICENSE",
+  "name": "regorusjs",
+  "description": "WASM bindings for Regorus - a fast, lightweight Rego interpreter written in Rust",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/microsoft/regorus"
+    "url": "https://github.com/microsoft/regorus/bindings/wasm"
   },
   "files": [
     "regorus_bg.wasm",
