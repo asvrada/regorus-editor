@@ -228,10 +228,10 @@ function App() {
         }}
       />
 
-      <Summary className=" m-2 p-2" />
+      <Summary className="m-2 p-2" />
 
       {/* Main Editor body */}
-      <div className="flex min-h-screen items-stretch">
+      <div className="flex min-h-screen">
         {/* Left window - Rego policy */}
         {componentLeftPanel}
 
@@ -240,7 +240,7 @@ function App() {
           onMouseDown={() => {
             isDragging.current = true;
           }}
-          className=" w-3 cursor-col-resize"
+          className="w-3 cursor-col-resize"
         ></div>
 
         {/* Right Column for a list of windows */}
