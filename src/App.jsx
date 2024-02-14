@@ -6,6 +6,7 @@ import Editor from "@monaco-editor/react";
 
 import "./App.css";
 import NavBar from "./components/NavBar";
+import Summary from "./components/Summary.jsx";
 import { REGO_LANGUAGE, SEPARATOR } from "./const";
 
 const EXAMPLES = {
@@ -213,9 +214,10 @@ function App() {
   );
 
   return (
-    <div className="flex h-screen flex-col bg-slate-300">
+    <div className="bg-slate-300">
       {/* Nav Bar */}
       <NavBar
+        className="bg-slate-300 sticky w-full z-20 top-0 start-0 shadow"
         callbackEvaluate={onClickEvaluate}
         callbackLoadExample={async () => {
           const { policy, input, data } = await loadExample(EXAMPLES.example1);
@@ -226,8 +228,10 @@ function App() {
         }}
       />
 
+      <Summary className=" m-2 p-2" />
+
       {/* Main Editor body */}
-      <div className="flex flex-auto">
+      <div className="flex min-h-screen items-stretch">
         {/* Left window - Rego policy */}
         {componentLeftPanel}
 
@@ -236,7 +240,7 @@ function App() {
           onMouseDown={() => {
             isDragging.current = true;
           }}
-          className="h-full w-3 cursor-col-resize"
+          className=" w-3 cursor-col-resize"
         ></div>
 
         {/* Right Column for a list of windows */}
