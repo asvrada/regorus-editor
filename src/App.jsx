@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import Editor from "@monaco-editor/react";
-
 import init, { Engine } from "regorus";
 
-import NavBar from "./components/NavBar";
-import { REGO_LANGUAGE, SEPARATOR } from "./const";
+import { useEffect, useRef, useState } from "react";
+
+import Editor from "@monaco-editor/react";
 
 import "./App.css";
+import NavBar from "./components/NavBar";
+import { REGO_LANGUAGE, SEPARATOR } from "./const";
 
 const EXAMPLES = {
   example1: {
@@ -118,7 +118,7 @@ function App() {
   }
 
   const componentLeftPanel = (
-    <div className="grow-0 shrink-0" style={{flexBasis: widthPolicyEditor}}>
+    <div className="shrink-0 grow-0" style={{ flexBasis: widthPolicyEditor }}>
       <Editor
         width="99%"
         height="99%"

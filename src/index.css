@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 @layer components {
-    /* For the panels in right column */
-    .panel {
-        @apply flex flex-col flex-auto;
-    }
+  /* For the panels in right column */
+  .panel {
+    @apply flex flex-auto flex-col;
+  }
 
-    /* Title of the Editor */
-    .title {
-        @apply text-sm font-bold flex-1;
-    }
+  /* Title of the Editor */
+  .title {
+    @apply flex-1 text-sm font-bold;
+  }
 
-    .editor {
-        @apply flex flex-auto;
-    }
+  .editor {
+    @apply flex flex-auto;
+  }
 }
